@@ -69,10 +69,7 @@ The deployment enables you to:
 
 - Red Hat OpenShift
 - Red Hat OpenShift AI 2.16+
-- Dependencies:
-  - Red Hat OpenShift Service Mesh
-  - Red Hat OpenShift Serverless
-  - Podman (for local development)
+
 
 ### Required permissions
 
@@ -105,6 +102,13 @@ oc new-project ${PROJECT}
 oc apply -k kustomize/llama3.2-3b
 ```
 
+### Deploy MCP Weather Server
+
+```bash
+# Deploy the MCP Weather Server
+oc apply -k kustomize/mcp-weather
+```
+
 ### Deploy Llama Stack
 
 ```bash
@@ -113,13 +117,6 @@ oc create configmap llama-stack-config --from-file=./files/run-vllm.yaml -n llam
 
 # Deploy Llama Stack components
 oc apply -k kustomize/llama-stack
-```
-
-### Deploy MCP Weather Server
-
-```bash
-# Deploy the MCP Weather Server
-oc apply -k kustomize/mcp-weather
 ```
 
 ## Test
