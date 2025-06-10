@@ -1,8 +1,8 @@
-# Llama Stack with MCP Weather Server
+# Llama Stack with MCP Server
 
-Welcome to the Llama Stack with MCP Weather Server Kickstart!
+Welcome to the Llama Stack with MCP Server Kickstart!
 
-Use this to quickly deploy Llama 3.2-3B on vLLM with Llama Stack and an MCP weather server in your OpenShift AI environment.
+Use this to quickly deploy Llama 3.2-3B on vLLM with Llama Stack and an MCP server in your OpenShift AI environment.
 
 To see how it's done, jump straight to [installation](#install).
 
@@ -43,7 +43,7 @@ The deployment enables you to:
 1. Query the Llama 3.2-3B model directly through vLLM
 2. Use Llama Stack to create AI agents
 3. Access real-time weather data through the MCP Weather Server
-4. Combine all components to create weather-aware AI applications
+4. Test the integration with the Llama Stack playground
 
 ## Architecture diagrams
 
@@ -79,7 +79,7 @@ The deployment enables you to:
 
 **Please note before you start**
 
-This example was tested on Red Hat OpenShift 4.16.24 & Red Hat OpenShift AI v2.16.2.
+This example was tested on Red Hat OpenShift 4.17.30 & Red Hat OpenShift AI v2.19.0.
 
 ### Clone the repository
 
