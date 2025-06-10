@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llama-stack
+  namespace: llama-stack-mcp-demo
+  labels:
+    app: llama-stack
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llama-stack
+  template:
+    metadata:
+      labels:
+        app: llama-stack
+    spec:
+      containers:
+        - name: llama-stack
+          image: llamastack/distribution-remote-vllm:latest
+          args:
+            - --yaml-config
+            - /tmp/my-run.yaml
+          ports:
+            - containerPort: 8001
+          env:
+            - name: INFERENCE_MODEL
+              value: "llama32-3b"
+            - name: VLLM_URL
+              value: "https://llama32-3b-predictor-llama-stack-mcp-demo.apps.dev.rhoai.rh-aiservices-bu.com/v1"
+            - name: LLAMA_STACK_PORT
+              value: "8001"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /tmp/my-run.yaml
+              subPath: run-vllm.yaml
+          resources:
+            limits:
+              cpu: "4"
+              memory: 8Gi
+            requests:
+              cpu: "2"
+              memory: 4Gi
+      volumes:
+        - name: config-volume
+          configMap:
+            name: llama-stack-config 

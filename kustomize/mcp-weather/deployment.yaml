@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mcp-weather
+  namespace: llama-stack-mcp-demo
+  labels:
+    app: mcp-weather
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mcp-weather
+  template:
+    metadata:
+      labels:
+        app: mcp-weather
+    spec:
+      containers:
+        - name: mcp-weather
+          image: quay.io/rh-aiservices-bu/mcp-weather:0.1.0-amd64
+          ports:
+            - containerPort: 3001
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 1Gi 

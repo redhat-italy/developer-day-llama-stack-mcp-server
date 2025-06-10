@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llama-stack-playground
+  namespace: llama-stack-mcp-demo
+spec:
+  selector:
+    app: llama-stack-playground
+  ports:
+    - port: 8501
+      targetPort: 8501
+      protocol: TCP
+  type: ClusterIP 
