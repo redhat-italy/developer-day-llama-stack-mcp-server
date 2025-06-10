@@ -121,7 +121,7 @@ oc apply -k kustomize/llama-stack
 
 ### Deploy the playground
 ```bash
-# Deploy the MCP Weather Server
+# Deploy the Llama Stack playground
 oc apply -k kustomize/llama-stack-playground
 ```
 
