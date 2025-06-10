@@ -27,7 +27,7 @@ spec:
             - name: INFERENCE_MODEL
               value: "llama32-3b"
             - name: VLLM_URL
-              value: "https://llama32-3b-predictor-llama-stack-mcp-demo.apps.dev.rhoai.rh-aiservices-bu.com/v1"
+              value: "http://llama32-3b-predictor:8080/v1"
             - name: LLAMA_STACK_PORT
               value: "8001"
           volumeMounts:
