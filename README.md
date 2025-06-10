@@ -119,6 +119,12 @@ oc create configmap llama-stack-config --from-file=./files/run-vllm.yaml -n llam
 oc apply -k kustomize/llama-stack
 ```
 
+### Deploy the playground
+```bash
+# Deploy the MCP Weather Server
+oc apply -k kustomize/llama-stack-playground
+```
+
 ## Test
 
 1. Get the Llama Stack playground route:
@@ -141,4 +147,19 @@ The current weather in New York is mostly sunny with a temperature of 75°F and 
 ```
 
 This confirms that the Llama Stack is successfully communicating with the MCP Weather Server and can process weather-related queries.
+
+## Cleanup
+
+To remove all components from OpenShift:
+
+```bash
+# Delete the project and all its resources
+oc delete project llama-stack-mcp-demo
+```
+
+This will remove:
+- Llama 3.2-3B vLLM deployment
+- Llama Stack services and playground
+- MCP Weather Server
+- All associated ConfigMaps, Services, and Routes
 
