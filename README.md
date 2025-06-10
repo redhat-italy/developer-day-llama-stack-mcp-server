@@ -1,64 +1,99 @@
-# [INSERT kickstart name here]
+# MCP Server Creation (Llama Stack)
 
-*Section is required. NOTE: any italicized or bracketed text should be deleted
-or replaced.*  
+This kickstart demonstrates how to create and integrate a Model Context Protocol (MCP) server with Llama Stack. It provides a practical example of exposing custom services that can be invoked by agents within the Llama Stack environment. By following this guide, you'll learn how to register an MCP server and make agentic calls to retrieve real-time weather information.
 
-*Replace title & this section with a high-level description
-of your kickstart.* 
-
-*Think of it as your elevator pitch. What is the kickstart? What does it do? Why
-should I bother deploying it?*
-
-*Need an example README? Look at:
-[vllm-cpu](https://github.com/rh-ai-kickstart/vllm-cpu)*
-
-*OR, [vLLM Tool Calling](https://github.com/rh-ai-kickstart/vllm-tool-calling)*
-
-*Lastly, include a link to the installation section so the user can start quickly.*
-
-*For example:* 
-
-To see how it's done, jump straight to [installation](#install). 
+To see how it's done, jump straight to [installation](#install).
 
 ## Table of contents
 
-*Table of contents is optional*
+- [Description](#description)
+- [See it in action](#see-it-in-action)
+- [Architecture diagrams](#architecture-diagrams)
+- [References](#references)
+- [Requirements](#requirements)
+- [Install](#install)
 
-## Description 
-*This section is required. This is your chance to describe the AI kickstart.*
+## Description
 
-## See it in action 
+This kickstart provides a hands-on tutorial for integrating a simple weather MCP server with Llama Stack. It demonstrates how to:
+- Deploy a Weather MCP server using Podman
+- Register the server in Llama Stack as a toolgroup
+- Query the weather service using natural language prompts through a Python agent
 
-*This section is optional but recommended*
+This setup enables you to expose real-world data to AI agents with minimal effort, demonstrating practical tool use using MCP and Llama Stack.
+
+## See it in action
+
+The kickstart includes a Python script that demonstrates how to:
+1. Set up a Llama Stack agent with access to the weather toolgroup
+2. Submit natural language prompts to query weather information
+3. Process and display weather forecasts for specified locations
+
+Example output shows detailed weather forecasts including temperature, wind conditions, and precipitation chances for multiple days.
 
 ## Architecture diagrams
 
-*Section is required. Put images in `assets/images` folder* 
+*[Place architecture diagram in assets/images folder]*
 
-## References 
+## References
 
-*Section required. Include links to supporting information, documentation, or
-learning materials.*
+- [Llama Stack Documentation](https://rh-aiservices-bu.github.io/llama-stack-tutorial/)
+- [Model Context Protocol (MCP) Tutorial](https://rh-aiservices-bu.github.io/llama-stack-tutorial/modules/elementary-02-mcp.html)
 
 ## Requirements
 
-*Section required* 
+### Minimum hardware requirements
 
-### Minimum hardware requirements 
+- Any system capable of running Podman containers
+- Sufficient storage for container images and Python environment
 
-*Section is required* 
+### Required software
 
-### Required software 
-
-*Section is required. What software dependencies do they need?* 
+- Llama Stack server running
+- Python 3.10 or higher
+- Podman
+- Python virtual environment
+- Llama Stack Client SDK (version 0.2.2)
 
 ### Required permissions
 
-*Section is required. Describe the permissions the user will need. Cluster
-admin? Regular user?*
+- Local system access to run Podman containers
+- Network access to run the MCP server and connect to Llama Stack
 
-## Install 
+## Install
 
-*Section is required. Include the explicit steps needed to deploy your
-kickstart. If screenshots are included, remember to put them in the
-`assets/images` folder.*
+1. Ensure you have the prerequisites installed:
+   ```bash
+   # Install Python 3.10+ if not already installed
+   # Set up and activate a Python virtual environment
+   ```
+
+2. Run the Weather MCP server using Podman:
+   ```bash
+   # For Intel Macs (AMD64)
+   podman run -p 3001:3001 quay.io/rh-aiservices-bu/mcp-weather:0.1.0-amd64
+
+   # For Apple Silicon Macs (ARM64/M1/M2/M3)
+   podman run -p 3001:3001 quay.io/rh-aiservices-bu/mcp-weather:0.1.0
+   ```
+
+3. Register the MCP Server in Llama Stack:
+   ```bash
+   # For macOS
+   curl -X POST -H "Content-Type: application/json" \
+   --data '{ "provider_id" : "model-context-protocol", "toolgroup_id" : "mcp::weather", "mcp_endpoint" : { "uri" : "http://host.containers.internal:3001/sse"}}' \
+   http://localhost:8321/v1/toolgroups
+   ```
+
+4. Install the Llama Stack Client SDK:
+   ```bash
+   pip install llama-stack-client==0.2.2
+   ```
+
+5. Create and run the test script:
+   ```bash
+   # Create test_weather.py with the provided code
+   python test_weather.py
+   ```
+
+The server will be available at http://localhost:3001/sse and ready to process weather queries through Llama Stack.
