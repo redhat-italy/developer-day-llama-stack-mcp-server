@@ -30,10 +30,5 @@ For troubleshooting:
   kubectl logs -l app.kubernetes.io/name=llama-stack
   kubectl logs -l app.kubernetes.io/name=llama3-2-3b
 
-{{- if index .Values.components "hr-enterprise-api" "enabled" }}
-HR API Configuration:
-- Make sure to update the HR API key in the secret: {{ .Values.secrets.hrApi.name }}
-  kubectl patch secret {{ .Values.secrets.hrApi.name }} -p '{"data":{"api-key":"'$(echo -n "your-production-key" | base64)'"}}'
-{{- end }}
 
 Happy AI agent building! 🦙🤖

@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: distribution-library/llama-stack
+  repository: llamastack/distribution-remote-vllm
   tag: "latest"
   pullPolicy: IfNotPresent
 
@@ -36,7 +36,7 @@ securityContext:
 service:
   type: ClusterIP
   port: 80
-  targetPort: 11434
+  targetPort: 8001
   annotations: {}
 
 route:
@@ -100,6 +100,8 @@ affinity: {}
 # Llama Stack configuration
 llamaStack:
   configFile: "run-vllm.yaml"
+  inferenceModel: "llama3-2-3b"
+  vllmUrl: "http://llama3-2-3b-predictor:8080/v1"
   
 # Model inference endpoints
 inference:
@@ -119,7 +121,6 @@ mcpServers:
 
 # Environment variables
 env:
-  LLAMA_STACK_PORT: "11434"
   LLAMA_STACK_HOST: "0.0.0.0"
 
 # ConfigMap for Llama Stack configuration
@@ -137,14 +138,14 @@ networkPolicy:
             name: openshift-ingress
       ports:
       - protocol: TCP
-        port: 11434
+        port: 8001
     - from:
       - podSelector:
           matchLabels:
             app.kubernetes.io/name: llama-stack-playground
       ports:
       - protocol: TCP
-        port: 11434
+        port: 8001
 
 # Pod Disruption Budget
 podDisruptionBudget:

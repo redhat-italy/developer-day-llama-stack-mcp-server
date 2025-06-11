@@ -2,7 +2,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ include "hr-enterprise-api.fullname" . }}
+  name: hr-enterprise-api
   labels:
     {{- include "hr-enterprise-api.labels" . | nindent 4 }}
   {{- with .Values.route.annotations }}

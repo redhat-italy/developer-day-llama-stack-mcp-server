@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "hr-enterprise-api.fullname" . }}
+  name: hr-enterprise-api
   labels:
     {{- include "hr-enterprise-api.labels" . | nindent 4 }}
 spec:
@@ -15,7 +15,6 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -26,7 +25,6 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "hr-enterprise-api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -47,31 +45,6 @@ spec:
             {{- if .Values.configMap.enabled }}
             - name: CONFIG_MAP_NAME
               value: {{ include "hr-enterprise-api.fullname" . }}-config
-            {{- end }}
-            {{- if .Values.secret.enabled }}
-            - name: SECRET_NAME
-              value: {{ include "hr-enterprise-api.fullname" . }}-secret
-            {{- end }}
-            {{- if .Values.database.enabled }}
-            - name: DB_HOST
-              value: {{ .Values.database.host | quote }}
-            - name: DB_PORT
-              value: {{ .Values.database.port | quote }}
-            - name: DB_NAME
-              value: {{ .Values.database.name | quote }}
-            - name: DB_USER
-              value: {{ .Values.database.username | quote }}
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "hr-enterprise-api.fullname" . }}-secret
-                  key: database-password
-            {{- end }}
-            {{- if .Values.redis.enabled }}
-            - name: REDIS_HOST
-              value: {{ .Values.redis.host | quote }}
-            - name: REDIS_PORT
-              value: {{ .Values.redis.port | quote }}
             {{- end }}
           livenessProbe:
             {{- toYaml .Values.livenessProbe | nindent 12 }}

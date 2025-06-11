@@ -44,7 +44,7 @@ components:
   hr-enterprise-api:
     enabled: true
   custom-mcp-server:
-    enabled: false
+    enabled: true
 
 # Llama 3.2-3B Model Configuration
 llama3-2-3b:
@@ -75,9 +75,9 @@ llama3-2-3b:
     nvidia.com/gpu.present: "true"
   
   tolerations:
-    - key: nvidia.com/gpu
-      operator: Exists
-      effect: NoSchedule
+    - effect: NoSchedule
+      key: nvidia.com/gpu
+      value: NVIDIA-A10G-SHARED
   
   persistence:
     enabled: true
@@ -87,11 +87,30 @@ llama3-2-3b:
   route:
     enabled: true
     host: ""
+  
+  # InferenceService configuration
+  inferenceService:
+    displayName: "llama3.2-3b"
+    maxReplicas: 1
+    minReplicas: 1
+    modelFormat: "vLLM"
+    modelName: ""
+    runtime: ""  # Will default to chart fullname if not specified
+    storageUri: "oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct"
+  
+  # Serving Runtime configuration
+  servingRuntime:
+    enabled: true  # Set to true to create a ServingRuntime resource
+    image: "quay.io/modh/vllm@sha256:0d55419f3d168fd80868a36ac89815dded9e063937a8409b7edf3529771383f3"
+    tensorParallelSize: 1
+    shmSizeLimit: "1Gi"
+    memBufferBytes: 134217728  # 128MB
+    modelLoadingTimeoutMillis: 90000  # 90 seconds
 
 # Llama Stack Configuration
-llama-stack:
+llamaStack::
   image:
-    repository: distribution-library/llama-stack
+    repository: llamastack/distribution-remote-vllm
     tag: "latest"
     pullPolicy: IfNotPresent
   
@@ -104,11 +123,19 @@ llama-stack:
       memory: 2Gi
   
   # Configuration will be auto-generated based on enabled components
-  inference:
-    endpoints:
-      - name: "meta-llama/Llama-3.2-3B-Instruct"
-        url: "http://llama3-2-3b:80/v1"
-        model: "meta-llama/Llama-3.2-3B-Instruct"
+
+  configFile: "run-vllm.yaml"
+  inferenceModel: "llama3-2-3b"
+  vllmUrl: "http://llama3-2-3b-predictor:8080/v1"
+  
+  # MCP servers configuration
+  mcpServers:
+    - name: "mcp-weather"
+      uri: "http://mcp-weather:3001"
+      description: "Weather data MCP server"
+    - name: "hr-api-tools"
+      uri: "http://custom-mcp-server:8000"
+      description: "HR API MCP server with employee, vacation, job, and performance tools"
   
   route:
     enabled: true
@@ -160,8 +187,8 @@ llama-stack-playground:
     STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
   
   playground:
-    llamaStackUrl: "http://llama-stack:80"
-    defaultModel: "meta-llama/Llama-3.2-3B-Instruct"
+    llamaStackUrl: "http://llama-stack"
+    defaultModel: "llama3-2-3b"
   
   route:
     enabled: true
@@ -225,20 +252,11 @@ custom-mcp-server:
   hrApi:
     baseUrl: "http://hr-enterprise-api:80"
     # Will use the same API key as hr-api component
-    secretName: "hr-api-secret"
-    secretKey: "api-key"
   
   route:
     enabled: true
     host: ""
 
-# Secrets configuration
-secrets:
-  # HR API secret
-  hrApi:
-    create: false
-    name: "hr-api-secret"
-    apiKey: "hr-api-production-key-change-me"
 
 # Network Policies
 networkPolicy:

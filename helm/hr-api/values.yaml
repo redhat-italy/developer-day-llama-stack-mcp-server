@@ -127,11 +127,6 @@ configMap:
   enabled: true
   data: {}
 
-# Secret for sensitive data
-secret:
-  enabled: true
-  data: {}
-
 # Network Policies
 networkPolicy:
   enabled: true
@@ -173,14 +168,7 @@ persistence:
   accessMode: ReadWriteOnce
   mountPath: /opt/app-root/data
 
-# Database configuration (if using external database)
-database:
-  enabled: false
-  host: ""
-  port: 5432
-  name: hr_database
-  username: hr_user
-  # password should be set in secret
+
 
 # Redis configuration (if using Redis)
 redis:

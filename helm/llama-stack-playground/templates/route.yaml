@@ -2,7 +2,7 @@
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ include "llama-stack-playground.fullname" . }}
+  name: llama-stack-playground
   labels:
     {{- include "llama-stack-playground.labels" . | nindent 4 }}
   {{- with .Values.route.annotations }}
@@ -15,7 +15,7 @@ spec:
   {{- end }}
   to:
     kind: Service
-    name: {{ include "llama-stack-playground.fullname" . }}
+    name: llama-stack-playground
     weight: 100
   port:
     targetPort: http
