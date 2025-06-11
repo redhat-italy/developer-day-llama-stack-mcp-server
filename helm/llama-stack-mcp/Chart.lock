@@ -1,0 +1,21 @@
+dependencies:
+- name: llama3-2-3b
+  repository: file://../llama3.2-3b
+  version: 1.0.0
+- name: llama-stack
+  repository: file://../llama-stack
+  version: 1.0.0
+- name: mcp-weather
+  repository: file://../mcp-weather
+  version: 1.0.0
+- name: llama-stack-playground
+  repository: file://../llama-stack-playground
+  version: 1.0.0
+- name: hr-enterprise-api
+  repository: file://../hr-api
+  version: 1.0.0
+- name: custom-mcp-server
+  repository: file://../custom-mcp-server
+  version: 1.0.0
+digest: sha256:1ecb7b376283dd8d8daa87ffcc92091af2de6ac1103ede5463a1f8c756a7136b
+generated: "2025-06-11T12:12:57.705591-04:00"

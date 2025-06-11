@@ -1,0 +1,53 @@
+# Use Red Hat Universal Base Image with Node.js
+FROM registry.access.redhat.com/ubi9/nodejs-18:latest
+
+# Set metadata
+LABEL name="hr-enterprise-api" \
+      version="1.0.0" \
+      description="Enterprise HR REST API for employee data, vacation, jobs, and performance" \
+      maintainer="Enterprise HR Team"
+
+# Switch to root to install packages and set up user
+USER root
+
+# Install additional system dependencies if needed
+RUN dnf update -y && \
+    dnf install -y --allowerasing \
+    curl \
+    && dnf clean all
+
+# Create application directory
+WORKDIR /opt/app-root/src
+
+# Copy package files first for better caching
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --omit=dev && \
+    npm cache clean --force
+
+# Copy application source code
+COPY . .
+
+# The UBI Node.js image already has user 1001 (default)
+# Just ensure proper ownership of the application directory
+RUN chown -R 1001:0 /opt/app-root/src && \
+    chmod -R g=u /opt/app-root/src
+
+# Switch to non-root user (1001 is the default user in UBI Node.js images)
+USER 1001
+
+# Expose the application port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/health || exit 1
+
+# Set environment variables
+ENV NODE_ENV=production \
+    PORT=3000 \
+    NPM_CONFIG_LOGLEVEL=warn
+
+# Run the application
+CMD ["npm", "start"]

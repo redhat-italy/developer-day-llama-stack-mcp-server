@@ -1,0 +1,40 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: custom-mcp-server
+
+resources:
+- deployment.yaml
+- service.yaml
+- route.yaml
+- configmap.yaml
+
+commonLabels:
+  app.kubernetes.io/name: custom-mcp-server
+  app.kubernetes.io/component: mcp-server
+  app.kubernetes.io/part-of: llama-stack-mcp-demo
+
+images:
+- name: quay.io/your-username/custom-mcp-server
+  newTag: latest
+
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: custom-mcp-server
+  spec:
+    template:
+      spec:
+        containers:
+        - name: custom-mcp-server
+          volumeMounts:
+          - name: config-volume
+            mountPath: /app/config
+            readOnly: true
+        volumes:
+        - name: config-volume
+          configMap:
+            name: custom-mcp-server-config

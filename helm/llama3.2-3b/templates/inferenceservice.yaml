@@ -1,0 +1,80 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: {{ include "llama3-2-3b.fullname" . }}
+  labels:
+    {{- include "llama3-2-3b.labels" . | nindent 4 }}
+  annotations:
+    serving.kserve.io/deploymentMode: RawDeployment
+spec:
+  predictor:
+    containers:
+    - name: kserve-container
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+      command:
+      - python3
+      - -m
+      - vllm.entrypoints.openai.api_server
+      args:
+      - --model={{ .Values.model.name }}
+      - --host={{ .Values.vllm.host }}
+      - --port={{ .Values.vllm.port }}
+      - --max-model-len={{ .Values.model.maxModelLen }}
+      - --gpu-memory-utilization={{ .Values.model.gpuMemoryUtilization }}
+      {{- if .Values.model.quantization }}
+      - --quantization={{ .Values.model.quantization }}
+      {{- end }}
+      - --dtype={{ .Values.model.dtype }}
+      {{- if .Values.vllm.apiKey }}
+      - --api-key={{ .Values.vllm.apiKey }}
+      {{- end }}
+      {{- if .Values.vllm.enableLogging }}
+      - --enable-auto-tool-choice
+      {{- end }}
+      - --served-model-name={{ .Values.model.name }}
+      env:
+      {{- range $key, $value := .Values.env }}
+      - name: {{ $key }}
+        value: {{ $value | quote }}
+      {{- end }}
+      {{- if .Values.dataConnection.enabled }}
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.dataConnection.name }}
+            key: AWS_ACCESS_KEY_ID
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.dataConnection.name }}
+            key: AWS_SECRET_ACCESS_KEY
+      - name: AWS_S3_ENDPOINT
+        valueFrom:
+          secretKeyRef:
+            name: {{ .Values.dataConnection.name }}
+            key: AWS_S3_ENDPOINT
+      - name: AWS_DEFAULT_REGION
+        value: {{ .Values.dataConnection.region }}
+      {{- end }}
+      ports:
+      - containerPort: {{ .Values.vllm.port }}
+        name: http
+        protocol: TCP
+      livenessProbe:
+        {{- toYaml .Values.livenessProbe | nindent 8 }}
+      readinessProbe:
+        {{- toYaml .Values.readinessProbe | nindent 8 }}
+      resources:
+        {{- toYaml .Values.resources | nindent 8 }}
+    {{- with .Values.nodeSelector }}
+    nodeSelector:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+    affinity:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+    tolerations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}

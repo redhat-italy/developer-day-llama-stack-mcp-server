@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-mcp-server-config
+  labels:
+    app: custom-mcp-server
+    component: mcp-server
+data:
+  mcp-config.json: |
+    {
+      "server_name": "custom-mcp-server",
+      "server_version": "1.0.0",
+      "capabilities": {
+        "tools": {
+          "listChanged": true
+        }
+      },
+      "tools": [
+        {
+          "name": "get_current_time",
+          "description": "Get the current date and time",
+          "enabled": true
+        },
+        {
+          "name": "calculate", 
+          "description": "Perform basic mathematical calculations",
+          "enabled": true
+        },
+        {
+          "name": "text_analyzer",
+          "description": "Analyze text and provide basic statistics", 
+          "enabled": true
+        }
+      ]
+    }

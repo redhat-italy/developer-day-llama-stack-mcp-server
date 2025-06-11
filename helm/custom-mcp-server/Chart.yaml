@@ -1,0 +1,23 @@
+apiVersion: v2
+name: custom-mcp-server
+description: A Helm chart for Custom MCP Server with HR API integration
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+keywords:
+  - mcp
+  - llama-stack
+  - hr-api
+  - ai
+home: https://github.com/company/llama-stack-mcp-server
+sources:
+  - https://github.com/company/llama-stack-mcp-server
+maintainers:
+  - name: AI Engineering Team
+    email: ai-engineering@company.com
+annotations:
+  category: AI Applications
+  openshift.io/display-name: "Custom MCP Server"
+  openshift.io/provider-display-name: "AI Engineering Team"
+  openshift.io/documentation-url: "https://docs.company.com/mcp-server"
+  openshift.io/support-url: "https://support.company.com"

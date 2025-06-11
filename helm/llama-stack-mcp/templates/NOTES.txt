@@ -1,0 +1,39 @@
+Llama Stack MCP deployment completed successfully!
+
+Components deployed:
+{{- if index .Values.components "llama3-2-3b" "enabled" }}
+✓ Llama 3.2-3B Model (vLLM)
+{{- end }}
+{{- if index .Values.components "llama-stack" "enabled" }}
+✓ Llama Stack Server
+{{- end }}
+{{- if index .Values.components "llama-stack-playground" "enabled" }}
+✓ Llama Stack Playground
+{{- end }}
+{{- if index .Values.components "hr-enterprise-api" "enabled" }}
+✓ HR Enterprise API
+{{- end }}
+{{- if index .Values.components "custom-mcp-server" "enabled" }}
+✓ Custom MCP Server (HR Integration)
+{{- end }}
+
+To get the playground URL:
+  export PLAYGROUND_URL=$(kubectl get route llama-stack-playground -o jsonpath='{.spec.host}' 2>/dev/null || echo "Route not found")
+  echo "Playground: https://$PLAYGROUND_URL"
+
+To check the status of all components:
+  helm status {{ .Release.Name }}
+  kubectl get pods -l app.kubernetes.io/part-of=llama-stack-mcp
+
+For troubleshooting:
+  kubectl get pods
+  kubectl logs -l app.kubernetes.io/name=llama-stack
+  kubectl logs -l app.kubernetes.io/name=llama3-2-3b
+
+{{- if index .Values.components "hr-enterprise-api" "enabled" }}
+HR API Configuration:
+- Make sure to update the HR API key in the secret: {{ .Values.secrets.hrApi.name }}
+  kubectl patch secret {{ .Values.secrets.hrApi.name }} -p '{"data":{"api-key":"'$(echo -n "your-production-key" | base64)'"}}'
+{{- end }}
+
+Happy AI agent building! 🦙🤖

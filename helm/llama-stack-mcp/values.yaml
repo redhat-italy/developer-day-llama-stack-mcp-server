@@ -1,0 +1,259 @@
+# Default values for llama-stack-mcp umbrella chart
+# This is a YAML-formatted file that configures all components
+
+# Global settings that apply to all components
+global:
+  # Container image registry settings
+  registry: "quay.io"
+  organization: "your-org"
+  
+  # OpenShift/Kubernetes settings
+  namespace: "llama-stack-mcp-demo"
+  storageClass: ""
+  
+  # Networking
+  domain: "apps.your-cluster.com"
+  tlsEnabled: true
+  
+  # Security
+  podSecurityContext:
+    runAsNonRoot: true
+    # Remove specific UID/GID to let OpenShift assign them
+    # fsGroup: 1001
+  
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+      - ALL
+    runAsNonRoot: true
+    # Remove specific UID/GID to let OpenShift assign them
+    # runAsUser: 1001
+    # runAsGroup: 1001
+
+# Component enablement flags - each component can be individually enabled/disabled
+components:
+  llama3-2-3b:
+    enabled: true
+  llama-stack:
+    enabled: true
+  mcp-weather:
+    enabled: true
+  llama-stack-playground:
+    enabled: true
+  hr-enterprise-api:
+    enabled: true
+  custom-mcp-server:
+    enabled: false
+
+# Llama 3.2-3B Model Configuration
+llama3-2-3b:
+  enabled: true
+  image:
+    repository: vllm/vllm-openai
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  model:
+    name: "meta-llama/Llama-3.2-3B-Instruct"
+    maxModelLen: 8192
+    gpuMemoryUtilization: 0.9
+    quantization: ""
+    dtype: "auto"
+  
+  resources:
+    limits:
+      nvidia.com/gpu: 1
+      memory: 24Gi
+      cpu: 4
+    requests:
+      nvidia.com/gpu: 1
+      memory: 16Gi
+      cpu: 2
+  
+  nodeSelector:
+    nvidia.com/gpu.present: "true"
+  
+  tolerations:
+    - key: nvidia.com/gpu
+      operator: Exists
+      effect: NoSchedule
+  
+  persistence:
+    enabled: true
+    size: 50Gi
+    mountPath: /root/.cache
+  
+  route:
+    enabled: true
+    host: ""
+
+# Llama Stack Configuration
+llama-stack:
+  image:
+    repository: distribution-library/llama-stack
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+  
+  # Configuration will be auto-generated based on enabled components
+  inference:
+    endpoints:
+      - name: "meta-llama/Llama-3.2-3B-Instruct"
+        url: "http://llama3-2-3b:80/v1"
+        model: "meta-llama/Llama-3.2-3B-Instruct"
+  
+  route:
+    enabled: true
+    host: ""
+
+# MCP Weather Server Configuration
+mcp-weather:
+  image:
+    repository: quay.io/rh-aiservices-bu/mcp-weather
+    tag: "0.1.0-amd64"
+    pullPolicy: IfNotPresent
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  weather:
+    provider: "openweathermap"
+    # Demo mode - no API key required
+    demoMode: true
+    apiKeySecretName: ""
+  
+  route:
+    enabled: true
+    host: ""
+
+# Llama Stack Playground Configuration
+llama-stack-playground:
+  image:
+    repository: quay.io/rh-aiservices-bu/llama-stack-playground
+    tag: "0.2.1"
+    pullPolicy: IfNotPresent
+  
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  
+  env:
+    STREAMLIT_SERVER_PORT: "8501"
+    STREAMLIT_SERVER_ADDRESS: "0.0.0.0" 
+    STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
+  
+  playground:
+    llamaStackUrl: "http://llama-stack:80"
+    defaultModel: "meta-llama/Llama-3.2-3B-Instruct"
+  
+  route:
+    enabled: true
+    host: ""
+
+# HR Enterprise API Configuration
+hr-enterprise-api:
+  image:
+    repository: quay.io/rh-aiservices-bu/sample-hr-app
+    tag: "0.0.1"
+    pullPolicy: IfNotPresent
+  
+  replicaCount: 1
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    maxReplicas: 3
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  
+  env:
+    NODE_ENV: production
+    PORT: "3000"
+    ENABLE_SWAGGER: "true"
+    ENABLE_RATE_LIMITING: "true"
+  
+  # API key for HR API access
+  apiKey: "hr-api-production-key-change-me"
+  
+  route:
+    enabled: true
+    host: ""
+
+# Custom MCP Server Configuration (HR API Integration)
+custom-mcp-server:
+  image:
+    repository: "{{ .Values.global.registry }}/{{ .Values.global.organization }}/custom-mcp-server"
+    tag: "1.0.0"
+    pullPolicy: IfNotPresent
+  
+  replicaCount: 1
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  # HR API connection settings
+  hrApi:
+    baseUrl: "http://hr-enterprise-api:80"
+    # Will use the same API key as hr-api component
+    secretName: "hr-api-secret"
+    secretKey: "api-key"
+  
+  route:
+    enabled: true
+    host: ""
+
+# Secrets configuration
+secrets:
+  # HR API secret
+  hrApi:
+    create: false
+    name: "hr-api-secret"
+    apiKey: "hr-api-production-key-change-me"
+
+# Network Policies
+networkPolicy:
+  enabled: true
+
+# Monitoring and Observability
+monitoring:
+  enabled: false
+  prometheus:
+    enabled: false
+  grafana:
+    enabled: false
+
+# Backup and Recovery
+backup:
+  enabled: false
+  schedule: "0 2 * * *"
+  retention: "7d"
