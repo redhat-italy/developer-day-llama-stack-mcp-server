@@ -9,20 +9,21 @@ To see how it's done, jump straight to [installation](#install).
 ## Table of Contents
 
 1. [Description](#description)
-2. [Architecture diagrams](#architecture-diagrams)
-3. [References](#references)
-4. [Prerequisites](#prerequisites)
+2. [Custom MCP Server](#custom-mcp-server)
+3. [Architecture diagrams](#architecture-diagrams)
+4. [References](#references)
+5. [Prerequisites](#prerequisites)
    - [Minimum hardware requirements](#minimum-hardware-requirements)
    - [Required software](#required-software)
    - [Required permissions](#required-permissions)
-5. [Install](#install)
+6. [Install](#install)
    - [Clone the repository](#clone-the-repository)
    - [Create the project](#create-the-project)
    - [Single Command Installation (Recommended)](#single-command-installation-recommended)
-6. [Test](#test)
+7. [Test](#test)
    - [Test HR API MCP Server in Playground](#test-hr-api-mcp-server-in-playground)
    - [Verification](#verification)
-7. [Cleanup](#cleanup)
+8. [Cleanup](#cleanup)
 
 ## Description
 
@@ -62,7 +63,6 @@ The MCP server acts as a bridge between the Llama Stack and the HR Enterprise AP
 - 1 GPU required (NVIDIA L40, A10, or similar)
 - 8+ vCPUs
 - 24+ GiB RAM
-- Storage: 30Gi minimum in PVC (larger models may require more)
 
 ### Required software
 
@@ -146,6 +146,10 @@ For troubleshooting:
 
 Enjoy Llama Stack and MCP on OpenShift AI! 
 ```
+
+When the deployment is complete, you should see all pods running in your OpenShift console:
+
+![OpenShift Deployment](assets/images/deployment.png)
 
 ## Test
 
