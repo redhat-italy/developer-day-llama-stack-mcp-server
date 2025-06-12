@@ -21,8 +21,6 @@ To see how it's done, jump straight to [installation](#install).
    - [Create the project](#create-the-project)
    - [Single Command Installation (Recommended)](#single-command-installation-recommended)
 7. [Test](#test)
-   - [Test HR API MCP Server in Playground](#test-hr-api-mcp-server-in-playground)
-   - [Verification](#verification)
 8. [Cleanup](#cleanup)
 
 ## Description
