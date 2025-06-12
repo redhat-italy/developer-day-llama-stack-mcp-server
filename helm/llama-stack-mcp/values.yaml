@@ -1,36 +1,6 @@
 # Default values for llama-stack-mcp umbrella chart
 # This is a YAML-formatted file that configures all components
 
-# Global settings that apply to all components
-global:
-  # Container image registry settings
-  registry: "quay.io"
-  organization: "your-org"
-  
-  # OpenShift/Kubernetes settings
-  namespace: "llama-stack-mcp-demo"
-  storageClass: ""
-  
-  # Networking
-  domain: "apps.your-cluster.com"
-  tlsEnabled: true
-  
-  # Security
-  podSecurityContext:
-    runAsNonRoot: true
-    # Remove specific UID/GID to let OpenShift assign them
-    # fsGroup: 1001
-  
-  securityContext:
-    allowPrivilegeEscalation: false
-    capabilities:
-      drop:
-      - ALL
-    runAsNonRoot: true
-    # Remove specific UID/GID to let OpenShift assign them
-    # runAsUser: 1001
-    # runAsGroup: 1001
-
 # Component enablement flags - each component can be individually enabled/disabled
 components:
   llama3-2-3b:
@@ -46,231 +16,21 @@ components:
   custom-mcp-server:
     enabled: true
 
-# Llama 3.2-3B Model Configuration
-llama3-2-3b:
-  enabled: true
-  image:
-    repository: vllm/vllm-openai
-    tag: "latest"
-    pullPolicy: IfNotPresent
-  
-  model:
-    name: "meta-llama/Llama-3.2-3B-Instruct"
-    maxModelLen: 8192
-    gpuMemoryUtilization: 0.9
-    quantization: ""
-    dtype: "auto"
-  
-  resources:
-    limits:
-      nvidia.com/gpu: 1
-      memory: 24Gi
-      cpu: 4
-    requests:
-      nvidia.com/gpu: 1
-      memory: 16Gi
-      cpu: 2
-  
-  nodeSelector:
-    nvidia.com/gpu.present: "true"
-  
-  tolerations:
-    - effect: NoSchedule
-      key: nvidia.com/gpu
-      value: NVIDIA-A10G-SHARED
-  
-  persistence:
-    enabled: true
-    size: 50Gi
-    mountPath: /root/.cache
-  
-  route:
-    enabled: true
-    host: ""
-  
-  # InferenceService configuration
-  inferenceService:
-    displayName: "llama3.2-3b"
-    maxReplicas: 1
-    minReplicas: 1
-    modelFormat: "vLLM"
-    modelName: ""
-    runtime: ""  # Will default to chart fullname if not specified
-    storageUri: "oci://quay.io/redhat-ai-services/modelcar-catalog:llama-3.2-3b-instruct"
-  
-  # Serving Runtime configuration
-  servingRuntime:
-    enabled: true  # Set to true to create a ServingRuntime resource
-    image: "quay.io/modh/vllm@sha256:0d55419f3d168fd80868a36ac89815dded9e063937a8409b7edf3529771383f3"
-    tensorParallelSize: 1
-    shmSizeLimit: "1Gi"
-    memBufferBytes: 134217728  # 128MB
-    modelLoadingTimeoutMillis: 90000  # 90 seconds
-
 # Llama Stack Configuration
-llamaStack::
-  image:
-    repository: llamastack/distribution-remote-vllm
-    tag: "latest"
-    pullPolicy: IfNotPresent
+llama-stack: {}
   
-  resources:
-    limits:
-      cpu: 2000m
-      memory: 4Gi
-    requests:
-      cpu: 1000m
-      memory: 2Gi
-  
-  # Configuration will be auto-generated based on enabled components
-
-  configFile: "run-vllm.yaml"
-  inferenceModel: "llama3-2-3b"
-  vllmUrl: "http://llama3-2-3b-predictor:8080/v1"
-  
-  # MCP servers configuration
-  mcpServers:
-    - name: "mcp-weather"
-      uri: "http://mcp-weather:3001"
-      description: "Weather data MCP server"
-    - name: "hr-api-tools"
-      uri: "http://custom-mcp-server:8000/sse"
-      description: "HR API MCP server with employee, vacation, job, and performance tools"
-  
-  route:
-    enabled: true
-    host: ""
-
 # MCP Weather Server Configuration
-mcp-weather:
-  image:
-    repository: quay.io/rh-aiservices-bu/mcp-weather
-    tag: "0.1.0-amd64"
-    pullPolicy: IfNotPresent
-  
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 250m
-      memory: 256Mi
-  
-  weather:
-    provider: "openweathermap"
-    # Demo mode - no API key required
-    demoMode: true
-    apiKeySecretName: ""
-  
-  route:
-    enabled: true
-    host: ""
+mcp-weather: {}
 
 # Llama Stack Playground Configuration
-llama-stack-playground:
-  image:
-    repository: quay.io/rh-aiservices-bu/llama-stack-playground
-    tag: "0.2.1"
-    pullPolicy: IfNotPresent
-  
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
-  
-  env:
-    STREAMLIT_SERVER_PORT: "8501"
-    STREAMLIT_SERVER_ADDRESS: "0.0.0.0" 
-    STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
-  
-  playground:
-    llamaStackUrl: "http://llama-stack"
-    defaultModel: "llama3-2-3b"
-  
-  route:
-    enabled: true
-    host: ""
+llama-stack-playground: {}
 
 # HR Enterprise API Configuration
-hr-enterprise-api:
-  image:
-    repository: quay.io/rh-aiservices-bu/sample-hr-app
-    tag: "0.0.1"
-    pullPolicy: IfNotPresent
-  
-  replicaCount: 1
-  
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 250m
-      memory: 256Mi
-  
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 70
-    targetMemoryUtilizationPercentage: 80
-  
-  env:
-    NODE_ENV: production
-    PORT: "3000"
-    ENABLE_SWAGGER: "true"
-    ENABLE_RATE_LIMITING: "true"
-  
-  # API key for HR API access
-  apiKey: "hr-api-production-key-change-me"
-  
-  route:
-    enabled: true
-    host: ""
+hr-enterprise-api: {}
 
 # Custom MCP Server Configuration (HR API Integration)
-custom-mcp-server:
-  image:
-    repository: "quay.io/rh-aiservices-bu/kickstart-custom-mcp-server"
-    tag: "latest"
-  
-  replicaCount: 1
-  
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 250m
-      memory: 256Mi
-  
-  # HR API connection settings
-  hrApi:
-    baseUrl: "http://hr-enterprise-api:80"
-    # Will use the same API key as hr-api component
-  
-  route:
-    enabled: true
-    host: ""
+custom-mcp-server: {}
+  # HR API connection settings - override default configuration
 
 
-# Network Policies
-networkPolicy:
-  enabled: true
 
-# Monitoring and Observability
-monitoring:
-  enabled: false
-  prometheus:
-    enabled: false
-  grafana:
-    enabled: false
-
-# Backup and Recovery
-backup:
-  enabled: false
-  schedule: "0 2 * * *"
-  retention: "7d"

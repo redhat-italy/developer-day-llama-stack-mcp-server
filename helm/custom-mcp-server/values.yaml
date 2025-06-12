@@ -38,25 +38,6 @@ service:
   targetPort: 8000
   annotations: {}
 
-route:
-  enabled: true
-  annotations: {}
-  host: ""
-  tls:
-    enabled: true
-    termination: edge
-    insecureEdgeTerminationPolicy: Redirect
-
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: mcp-server.local
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
 
 resources:
   limits:
@@ -86,9 +67,6 @@ readinessProbe:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -105,26 +83,3 @@ env:
 hrApi:
   baseUrl: "http://hr-enterprise-api:80"
 
-# Network Policies
-networkPolicy:
-  enabled: true
-  ingress:
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            name: openshift-ingress
-      ports:
-      - protocol: TCP
-        port: 8000
-    - from:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: llama-stack
-      ports:
-      - protocol: TCP
-        port: 8000
-
-# Pod Disruption Budget
-podDisruptionBudget:
-  enabled: false
-  minAvailable: 1
