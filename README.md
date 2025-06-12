@@ -106,10 +106,7 @@ Deploy the complete Llama Stack with MCP servers using the umbrella chart:
 
 ```bash
 
-# Update Helm dependencies
-helm dependency update ./helm/llama-stack-mcp
-
-# Update build dependencies
+# Build dependencies (downloads and packages all required charts)
 helm dependency build ./helm/llama-stack-mcp
 
 # Deploy everything with a single command
