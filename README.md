@@ -10,18 +10,21 @@ To see how it's done, jump straight to [installation](#install).
 
 1. [Description](#description)
 2. [Custom MCP Server](#custom-mcp-server)
-3. [Architecture diagrams](#architecture-diagrams)
-4. [References](#references)
-5. [Prerequisites](#prerequisites)
+3. [How MCP Servers Work with Llama Stack](#how-mcp-servers-work-with-llama-stack)
+   - [MCP Server Registration](#mcp-server-registration)
+   - [Tool Execution Flow](#tool-execution-flow)
+4. [Architecture diagrams](#architecture-diagrams)
+5. [References](#references)
+6. [Prerequisites](#prerequisites)
    - [Minimum hardware requirements](#minimum-hardware-requirements)
    - [Required software](#required-software)
    - [Required permissions](#required-permissions)
-6. [Install](#install)
+7. [Install](#install)
    - [Clone the repository](#clone-the-repository)
    - [Create the project](#create-the-project)
    - [Single Command Installation (Recommended)](#single-command-installation-recommended)
-7. [Test](#test)
-8. [Cleanup](#cleanup)
+8. [Test](#test)
+9. [Cleanup](#cleanup)
 
 ## Description
 
@@ -41,6 +44,53 @@ The custom MCP server (`custom-mcp-server/`) demonstrates how to build a Model C
 The MCP server acts as a bridge between the Llama Stack and the HR Enterprise API, translating LLM tool calls into REST API requests.
 
 **Source Code & Build Instructions**: If you want to modify the custom MCP server, see the complete source code and build instructions in the `custom-mcp-server/` directory. The server is built using Python and can be customized to integrate with your own enterprise APIs.
+
+## How MCP Servers Work with Llama Stack
+
+### MCP Server Registration
+
+MCP servers are registered with Llama Stack through configuration. The Llama Stack server automatically discovers and connects to configured MCP servers at startup. Here's an example of how MCP servers are configured:
+
+```yaml
+# Llama Stack MCP server configuration
+mcpServers:
+  - name: "mcp-weather"
+    uri: "http://mcp-weather:3001"
+    description: "Weather data MCP server"
+  - name: "hr-api-tools"
+    uri: "http://custom-mcp-server:8000/sse"
+    description: "HR API MCP server with employee, vacation, job, and performance tools"
+```
+
+In this example, this configuration is maintained in the `llama-stack-config` config map, part of the llama-stack helm chart.
+
+When Llama Stack starts, it:
+1. **Connects to each MCP server** via Server-Sent Events (SSE) or WebSocket
+2. **Discovers available tools** by querying each server's capabilities
+3. **Registers tool schemas** that describe what each tool does and its parameters
+4. **Makes tools available** to the LLM for use in conversations
+
+### Tool Execution Flow
+
+When a user requests to use a tool, here's the complete flow:
+
+1. **User Request**: User asks a question in the Llama Stack Playground (e.g., "What's the weather in New York?")
+
+2. **LLM Context**: Llama Stack includes the available tool definitions in the system message sent to the LLM
+
+3. **LLM Response**: The LLM decides to use a tool and responds with a structured tool call (e.g., `getforecast` with location parameter)
+
+4. **Tool Execution**: Llama Stack intercepts the tool call and routes it to the appropriate MCP server
+
+5. **MCP Processing**: The MCP server executes the tool (e.g., calls the weather API or HR database)
+
+6. **Result Return**: The MCP server returns structured results back to Llama Stack
+
+7. **LLM Integration**: Llama Stack provides the tool results to the LLM as context
+
+8. **Final Response**: The LLM incorporates the tool results into a natural language response for the user
+
+This seamless integration allows the LLM to access real-time data and perform actions while maintaining a natural conversational interface.
 
 ## Architecture diagrams
 
