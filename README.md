@@ -124,6 +124,26 @@ This will deploy all components including:
 - HR MCP Server
 - Llama Stack Playground
 
+Once the deployment is complete, you should see:
+
+```bash
+To get the playground URL:
+  export PLAYGROUND_URL=$(oc get route llama-stack-playground -o jsonpath='{.spec.host}' 2>/dev/null || echo "Route not found")
+  echo "Playground: https://$PLAYGROUND_URL"
+
+To check the status of all components:
+  helm status {{ .Release.Name }}
+  oc get pods -l app.kubernetes.io/part-of=llama-stack-mcp
+
+For troubleshooting:
+  oc get pods
+  oc logs -l app.kubernetes.io/name=llama-stack
+  oc logs -l app.kubernetes.io/name=llama3-2-3b
+
+
+Enjoy Llama Stack and MCP on OpenShift AI! 
+```
+
 ## Test
 
 1. Get the Llama Stack playground route:
@@ -136,7 +156,7 @@ oc get route llama-stack-playground -n llama-stack-mcp-demo
 
 3. In the playground:
    - Click on the "Tools" tab
-   - Select "Weather MCP Server" from the available tools
+   - Select "Weather" MCP Server from the available tools
    - In the chat interface, type: "What's the weather in New York?"
 
 4. You should receive a response similar to:
@@ -153,13 +173,13 @@ This confirms that the Llama Stack is successfully communicating with the MCP We
 In the playground interface:
 
 - **Navigate to Tools**: Click on the "Tools" tab
-- **Verify availability**: Look for your Internal HR  tools:
+- **Verify availability**: Look for your Internal HR tools:
   - `get_vacation_balance` - Check employee vacation balances
   - `create_vacation_request` - Submit new vacation requests
 
+Select the "internal-hr" MCP Server
 
 3. **Test with sample queries**:
-
 
 **Test vacation balance:**
 ```

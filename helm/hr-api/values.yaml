@@ -54,16 +54,6 @@ route:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: hr-api.local
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
 
 resources:
   limits:
@@ -93,10 +83,6 @@ readinessProbe:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 70
-  targetMemoryUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -127,57 +113,8 @@ configMap:
   enabled: true
   data: {}
 
-# Network Policies
-networkPolicy:
-  enabled: true
-  ingress:
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            name: openshift-ingress
-      ports:
-      - protocol: TCP
-        port: 3000
-    - from:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: hr-enterprise-api
-      ports:
-      - protocol: TCP
-        port: 3000
-
-# Pod Disruption Budget
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 1
-
-# ServiceMonitor for Prometheus monitoring
-serviceMonitor:
-  enabled: false
-  namespace: ""
-  labels: {}
-  interval: 30s
-  path: /metrics
-  port: http
 
 # Persistent Volume (if needed for file storage)
 persistence:
   enabled: false
-  size: 1Gi
-  storageClass: ""
-  accessMode: ReadWriteOnce
   mountPath: /opt/app-root/data
-
-
-
-# Redis configuration (if using Redis)
-redis:
-  enabled: false
-  host: ""
-  port: 6379
-
-# Backup configuration
-backup:
-  enabled: false
-  schedule: "0 2 * * *"
-  retention: "7d"

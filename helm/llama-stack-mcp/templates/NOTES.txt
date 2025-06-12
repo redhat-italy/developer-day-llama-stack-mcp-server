@@ -31,4 +31,4 @@ For troubleshooting:
   oc logs -l app.kubernetes.io/name=llama3-2-3b
 
 
-Happy AI agent building! 🦙🤖
+Enjoy Llama Stack and MCP on OpenShift AI! 

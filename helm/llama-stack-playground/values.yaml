@@ -48,16 +48,6 @@ route:
     termination: edge
     insecureEdgeTerminationPolicy: Redirect
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-  hosts:
-    - host: llama-stack-playground.local
-      paths:
-        - path: /
-          pathType: Prefix
-  tls: []
 
 resources:
   limits:
@@ -87,9 +77,6 @@ readinessProbe:
 
 autoscaling:
   enabled: false
-  minReplicas: 1
-  maxReplicas: 3
-  targetCPUUtilizationPercentage: 80
 
 nodeSelector: {}
 
@@ -103,10 +90,6 @@ playground:
   llamaStackUrl: "http://llama-stack"
   # Default model to use
   defaultModel: "llama3-2-3b"
-  # Enable/disable features
-  enableChat: true
-  enableAgents: true
-  enableTools: true
 
 # Environment variables
 env:
@@ -114,27 +97,3 @@ env:
   STREAMLIT_SERVER_ADDRESS: "0.0.0.0"
   STREAMLIT_BROWSER_GATHER_USAGE_STATS: "false"
 
-# Network Policies
-networkPolicy:
-  enabled: true
-  ingress:
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            name: openshift-ingress
-      ports:
-      - protocol: TCP
-        port: 8501
-  egress:
-    - to:
-      - podSelector:
-          matchLabels:
-            app.kubernetes.io/name: llama-stack
-      ports:
-      - protocol: TCP
-        port: 80
-
-# Pod Disruption Budget
-podDisruptionBudget:
-  enabled: false
-  minAvailable: 1
