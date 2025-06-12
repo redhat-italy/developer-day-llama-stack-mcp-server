@@ -2,7 +2,7 @@
 
 Welcome to the Llama Stack with MCP Server Kickstart!
 
-Use this to quickly deploy Llama 3.2-3B on vLLM with Llama Stack and an MCP server in your OpenShift AI environment.
+Use this to quickly deploy Llama 3.2-3B on vLLM with Llama Stack and MCP servers in your OpenShift AI environment.
 
 To see how it's done, jump straight to [installation](#install).
 
@@ -86,8 +86,6 @@ All components are deployed using Helm charts located in the `helm/` directory:
 - `helm/hr-api/` - HR Enterprise API
 - `helm/llama-stack-mcp/` - Umbrella chart for single-command deployment
 
-**Custom MCP Server**: See `custom-mcp-server/` directory for building and deploying a custom MCP server that integrates with the HR API.
-
 ### Clone the repository
 
 ```bash
@@ -102,7 +100,7 @@ PROJECT="llama-stack-mcp-demo"
 oc new-project ${PROJECT}
 ```
 
-## Single Command Installation (Recommended)
+### Build and deploy the helm chart
 
 Deploy the complete Llama Stack with MCP servers using the umbrella chart:
 
@@ -150,22 +148,6 @@ The current weather in New York is mostly sunny with a temperature of 75°F and 
 
 This confirms that the Llama Stack is successfully communicating with the MCP Weather Server and can process weather-related queries.
 
-
-### Test HR API MCP Server in Playground
-
-Test your HR API MCP server integration using the Llama Stack playground:
-
-1. **Access the playground**:
-
-```bash
-# Get the playground route URL
-PLAYGROUND_URL=$(oc get route llama-stack-playground -o jsonpath='{.spec.host}')
-echo "Playground URL: https://${PLAYGROUND_URL}"
-
-# Open in browser or visit manually
-echo "Visit: https://${PLAYGROUND_URL}"
-```
-
 2. **Test HR API MCP server tools**:
 
 In the playground interface:
@@ -183,7 +165,6 @@ In the playground interface:
 ```
 What is the vacation balance for employee EMP001?
 ```
-
 
 **Test vacation request:**
 ```
