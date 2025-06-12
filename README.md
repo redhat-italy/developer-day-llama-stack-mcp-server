@@ -9,30 +9,20 @@ To see how it's done, jump straight to [installation](#install).
 ## Table of Contents
 
 1. [Description](#description)
-2. [See it in action](#see-it-in-action)
-3. [Architecture diagrams](#architecture-diagrams)
-4. [References](#references)
-5. [Prerequisites](#prerequisites)
+2. [Architecture diagrams](#architecture-diagrams)
+3. [References](#references)
+4. [Prerequisites](#prerequisites)
    - [Minimum hardware requirements](#minimum-hardware-requirements)
    - [Required software](#required-software)
    - [Required permissions](#required-permissions)
-6. [Install](#install)
+5. [Install](#install)
    - [Clone the repository](#clone-the-repository)
    - [Create the project](#create-the-project)
-   - [Deploy Llama 3.2-3B on vLLM](#deploy-llama-32-3b-on-vllm)
-   - [Deploy Llama Stack](#deploy-llama-stack)
-   - [Deploy MCP Weather Server](#deploy-mcp-weather-server)
-7. [Test](#test)
-8. [Creating a Custom Python MCP Server](#creating-a-custom-python-mcp-server)
-   - [Setup Python environment](#setup-python-environment)
-   - [Create the MCP server](#create-the-mcp-server)
-   - [Test locally](#test-locally)
-9. [Building and Pushing Container Image](#building-and-pushing-container-image)
-   - [Create Containerfile](#create-containerfile)
-   - [Build and push to Quay.io](#build-and-push-to-quayio)
-10. [Deploy Custom MCP Server to OpenShift](#deploy-custom-mcp-server-to-openshift)
-   - [Deploy to OpenShift](#deploy-to-openshift)
-11. [Cleanup](#cleanup)
+   - [Single Command Installation (Recommended)](#single-command-installation-recommended)
+6. [Test](#test)
+   - [Test HR API MCP Server in Playground](#test-hr-api-mcp-server-in-playground)
+   - [Verification](#verification)
+7. [Cleanup](#cleanup)
 
 ## Description
 
@@ -57,7 +47,7 @@ It's designed for environments where you want to:
 ## References
 
 - [Llama Stack Documentation](https://rh-aiservices-bu.github.io/llama-stack-tutorial/)
-- [Model Context Protocol (MCP) Tutorial](https://rh-aiservices-bu.github.io/llama-stack-tutorial/modules/elementary-02-mcp.html)
+- [Model Context Protocol (MCP) Quick Start](https://modelcontextprotocol.io/quickstart/server)
 - [vLLM Documentation](https://github.com/vllm-project/vllm)
 - [Red Hat OpenShift AI Documentation](https://access.redhat.com/documentation/en-us/red_hat_openshift_ai)
 
@@ -181,7 +171,7 @@ echo "Visit: https://${PLAYGROUND_URL}"
 In the playground interface:
 
 - **Navigate to Tools**: Click on the "Tools" tab
-- **Verify availability**: Look for your HR API MCP server tools:
+- **Verify availability**: Look for your Internal HR  tools:
   - `get_vacation_balance` - Check employee vacation balances
   - `create_vacation_request` - Submit new vacation requests
 
@@ -199,9 +189,6 @@ What is the vacation balance for employee EMP001?
 ```
 book some annual vacation time off for EMP001 for June 8th and 9th
 ```
-
-
-
 
 ### Verification
 
