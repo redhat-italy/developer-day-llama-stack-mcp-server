@@ -33,12 +33,15 @@ This kickstart provides a complete setup for deploying:
 - MCP Weather Server for real-time weather data access
 - Custom MCP server providing access to the sample HR application
 
+## Custom MCP Server
 
-It's designed for environments where you want to:
-- Serve Llama 3.2-3B efficiently using vLLM
-- Enable LLMs to interact with external tools through Llama Stack
-- Demonstrate real-world tool integration using the MCP HR server
+The custom MCP server (`custom-mcp-server/`) demonstrates how to build a Model Context Protocol server that integrates with enterprise APIs. This server provides the following tools to the LLM:
 
+- **Vacation Management**: Check vacation balances and create vacation requests
+
+The MCP server acts as a bridge between the Llama Stack and the HR Enterprise API, translating LLM tool calls into REST API requests.
+
+**Source Code & Build Instructions**: If you want to modify the custom MCP server, see the complete source code and build instructions in the `custom-mcp-server/` directory. The server is built using Python and can be customized to integrate with your own enterprise APIs.
 
 ## Architecture diagrams
 
