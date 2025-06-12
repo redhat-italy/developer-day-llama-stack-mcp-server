@@ -1,4 +1,4 @@
-Llama Stack MCP deployment completed successfully!
+Llama Stack MCP Kickstart deployment completed successfully!
 
 Components deployed:
 {{- if index .Values.components "llama3-2-3b" "enabled" }}
@@ -18,17 +18,17 @@ Components deployed:
 {{- end }}
 
 To get the playground URL:
-  export PLAYGROUND_URL=$(kubectl get route llama-stack-playground -o jsonpath='{.spec.host}' 2>/dev/null || echo "Route not found")
+  export PLAYGROUND_URL=$(oc get route llama-stack-playground -o jsonpath='{.spec.host}' 2>/dev/null || echo "Route not found")
   echo "Playground: https://$PLAYGROUND_URL"
 
 To check the status of all components:
   helm status {{ .Release.Name }}
-  kubectl get pods -l app.kubernetes.io/part-of=llama-stack-mcp
+  oc get pods -l app.kubernetes.io/part-of=llama-stack-mcp
 
 For troubleshooting:
-  kubectl get pods
-  kubectl logs -l app.kubernetes.io/name=llama-stack
-  kubectl logs -l app.kubernetes.io/name=llama3-2-3b
+  oc get pods
+  oc logs -l app.kubernetes.io/name=llama-stack
+  oc logs -l app.kubernetes.io/name=llama3-2-3b
 
 
 Happy AI agent building! 🦙🤖

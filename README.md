@@ -65,6 +65,8 @@ It's designed for environments where you want to:
 
 - Red Hat OpenShift
 - Red Hat OpenShift AI 2.16+
+- OpenShift CLI (`oc`) - [Download here](https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html)
+- Helm CLI (`helm`) - [Download here](https://helm.sh/docs/intro/install/)
 
 
 ### Required permissions
@@ -96,8 +98,7 @@ git clone https://github.com/rh-ai-kickstart/llama-stack-mcp-server.git && \
 ### Create the project
 
 ```bash
-PROJECT="llama-stack-mcp-demo"
-oc new-project ${PROJECT}
+oc new-project llama-stack-mcp-demo
 ```
 
 ### Build and deploy the helm chart
@@ -112,6 +113,8 @@ helm dependency build ./helm/llama-stack-mcp
 # Deploy everything with a single command
 helm install llama-stack-mcp ./helm/llama-stack-mcp 
 ```
+
+**Note:** The `llama-stack` pod will be in `CrashLoopBackOff` status until the Llama model is fully loaded and being served. This is normal behavior as the Llama Stack server requires the model endpoint to be available before it can start successfully.
 
 This will deploy all components including:
 - Llama 3.2-3B model on vLLM
