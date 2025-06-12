@@ -124,7 +124,6 @@ This will deploy all components including:
 - HR MCP Server
 - Llama Stack Playground
 
-
 ## Test
 
 1. Get the Llama Stack playground route:
@@ -133,6 +132,7 @@ oc get route llama-stack-playground -n llama-stack-mcp-demo
 ```
 
 2. Open the playground URL in your browser (it will look something like `https://llama-stack-playground-llama-stack-mcp-demo.apps.openshift-cluster.company.com`)
+
 
 3. In the playground:
    - Click on the "Tools" tab
@@ -170,6 +170,8 @@ What is the vacation balance for employee EMP001?
 ```
 book some annual vacation time off for EMP001 for June 8th and 9th
 ```
+
+![Llama Stack Playground](assets/images/playground.png)
 
 ### Verification
 
