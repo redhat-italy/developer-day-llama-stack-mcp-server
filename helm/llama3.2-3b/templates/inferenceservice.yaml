@@ -11,8 +11,6 @@ metadata:
     sidecar.istio.io/inject: 'true'
     sidecar.istio.io/rewriteAppHTTPProbers: 'true'
     serving.kserve.io/deploymentMode: RawDeployment
-  finalizers:
-    - serving.kserve.io/inferenceservice-finalizer
 spec:
   predictor:
     maxReplicas: {{ .Values.inferenceService.maxReplicas | default 1 }}

@@ -140,5 +140,9 @@ tool_groups:
   provider_id: model-context-protocol
   mcp_endpoint:
     uri: http://mcp-weather:3001/sse
+- toolgroup_id: mcp::internal-hr
+  provider_id: model-context-protocol
+  mcp_endpoint:
+    uri: http://custom-mcp-server/sse
 server:
   port: 8001

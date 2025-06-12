@@ -134,7 +134,7 @@ llamaStack::
       uri: "http://mcp-weather:3001"
       description: "Weather data MCP server"
     - name: "hr-api-tools"
-      uri: "http://custom-mcp-server:8000"
+      uri: "http://custom-mcp-server:8000/sse"
       description: "HR API MCP server with employee, vacation, job, and performance tools"
   
   route:
@@ -234,9 +234,8 @@ hr-enterprise-api:
 # Custom MCP Server Configuration (HR API Integration)
 custom-mcp-server:
   image:
-    repository: "{{ .Values.global.registry }}/{{ .Values.global.organization }}/custom-mcp-server"
-    tag: "1.0.0"
-    pullPolicy: IfNotPresent
+    repository: "quay.io/rh-aiservices-bu/kickstart-custom-mcp-server"
+    tag: "latest"
   
   replicaCount: 1
   

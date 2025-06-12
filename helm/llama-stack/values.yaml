@@ -116,7 +116,7 @@ mcpServers:
     uri: "http://mcp-weather:80"
     description: "Weather MCP Server for real-time weather data"
   - name: "hr-api-tools"
-    uri: "http://custom-mcp-server:80"
+    uri: "http://custom-mcp-server:8000/sse"
     description: "HR API MCP server with employee, vacation, job, and performance tools"
 
 # Environment variables

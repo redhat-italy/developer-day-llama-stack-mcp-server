@@ -3,11 +3,12 @@ FROM registry.access.redhat.com/ubi9/python-311:latest
 # Set working directory
 WORKDIR /app
 
+USER root
 # Install system dependencies
-RUN microdnf update -y && \
-    microdnf install -y --allowerasing \
+RUN dnf update -y && \
+    dnf install -y --allowerasing \
     curl \
-    && microdnf clean all
+    && dnf clean all
 
 # Copy requirements first for better caching
 COPY requirements.txt .

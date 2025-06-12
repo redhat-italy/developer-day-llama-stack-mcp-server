@@ -145,12 +145,14 @@ data:
       provider_id: rag-runtime
     - toolgroup_id: builtin::wolfram_alpha
       provider_id: wolfram-alpha
-    {{- range .Values.mcpServers }}
-    - toolgroup_id: mcp::{{ .name }}
+    - toolgroup_id: mcp::weather
       provider_id: model-context-protocol
       mcp_endpoint:
-        uri: {{ .uri }}{{ if eq .name "weather" }}/sse{{ end }}
-    {{- end }}
+        uri: http://mcp-weather/sse
+    - toolgroup_id: mcp::internal-hr
+      provider_id: model-context-protocol
+      mcp_endpoint:
+        uri: http://custom-mcp-server/sse
     server:
       port: 8001
 {{- end }}

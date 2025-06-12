@@ -15,7 +15,7 @@ spec:
   {{- end }}
   to:
     kind: Service
-    name: {{ include "hr-enterprise-api.fullname" . }}
+    name: hr-enterprise-api
     weight: 100
   port:
     targetPort: http

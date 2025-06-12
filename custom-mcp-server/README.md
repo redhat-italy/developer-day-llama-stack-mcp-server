@@ -47,9 +47,6 @@ pip install -r requirements.txt
 
 ### Test locally
 
-```bash
-# Make the server executable
-chmod +x server.py
 
 # Set environment variables for local HR API
 export HR_API_BASE_URL="http://localhost:3000"
@@ -75,7 +72,7 @@ podman build -t custom-mcp-server:latest .
 Build for multiple architectures (recommended for production):
 ```bash
 # Build multi-arch image for AMD64 and ARM64
-podman build --platform=linux/amd64,linux/arm64 -t custom-mcp-server:latest .
+podman build --platform=linux/amd64 -t quay.io/rh-aiservices-bu/kickstart-custom-mcp-server:latest .
 
 # Or build specific architecture
 podman build --platform=linux/amd64 -t custom-mcp-server:amd64 .

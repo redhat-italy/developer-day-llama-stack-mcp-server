@@ -2,9 +2,8 @@
 replicaCount: 1
 
 image:
-  repository: quay.io/company/custom-mcp-server
-  tag: "1.0.0"
-  pullPolicy: IfNotPresent
+  repository: quay.io/rh-aiservices-bu/kickstart-custom-mcp-server
+  tag: "latest"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -105,9 +104,6 @@ env:
 # HR API configuration
 hrApi:
   baseUrl: "http://hr-enterprise-api:80"
-  # API key will be stored in secret
-  secretName: "hr-api-secret"
-  secretKey: "api-key"
 
 # Network Policies
 networkPolicy:
