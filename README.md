@@ -177,22 +177,26 @@ This will deploy all components including:
 
 Once the deployment is complete, you should see:
 
-```bash
 To get the playground URL:
+```bash
   export PLAYGROUND_URL=$(oc get route llama-stack-playground -o jsonpath='{.spec.host}' 2>/dev/null || echo "Route not found")
   echo "Playground: https://$PLAYGROUND_URL"
+```
 
 To check the status of all components:
-  helm status {{ .Release.Name }}
-  oc get pods -l app.kubernetes.io/part-of=llama-stack-mcp
+```bash
+  helm status llama-stack-mcp
+  oc get pods 
+```
 
 For troubleshooting:
+```bash
   oc get pods
   oc logs -l app.kubernetes.io/name=llama-stack
   oc logs -l app.kubernetes.io/name=llama3-2-3b
-
-
-Enjoy Llama Stack and MCP on OpenShift AI! 
+  oc logs -l app.kubernetes.io/name=custom-mcp-server
+  oc logs -l app.kubernetes.io/name=hr-enterprise-api
+  oc logs -l app.kubernetes.io/name=mcp-weather
 ```
 
 When the deployment is complete, you should see all pods running in your OpenShift console:
@@ -257,15 +261,10 @@ Verify that your custom MCP server is working correctly:
 oc get pods
 
 # Check the custom MCP server logs
-oc logs -l app=custom-mcp-server
+oc logs -l app.kubernetes.io/name=custom-mcp-server
 
 # Test the service connectivity
-oc exec -it deployment/llama-stack -- curl http://custom-mcp-server:8000/health
-
-# Get the route URL for external access
-ROUTE_URL=$(oc get route custom-mcp-server -o jsonpath='{.spec.host}')
-echo "Custom MCP Server URL: https://${ROUTE_URL}"
-```
+oc exec -it deployment/llama-stack -- curl http://custom-mcp-server/health
 
 ## Cleanup
 

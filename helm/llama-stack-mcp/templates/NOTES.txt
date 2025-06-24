@@ -22,9 +22,10 @@ To get the playground URL:
   echo "Playground: https://$PLAYGROUND_URL"
 
 To check the status of all components:
-  helm status {{ .Release.Name }}
-  oc get pods -l app.kubernetes.io/part-of=llama-stack-mcp
+  helm status llama-stack-mcp
+  oc get pods 
 
+Note: the llama-stack pod will likely be in a CrashLoopBackOff status until the llama3-2-3b-predictor pod is running
 For troubleshooting:
   oc get pods
   oc logs -l app.kubernetes.io/name=llama-stack
