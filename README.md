@@ -290,3 +290,23 @@ This will remove:
 - Custom MCP Server (if deployed)
 - HR Enterprise API (if deployed)
 - All associated ConfigMaps, Services, Routes, and Secrets
+
+Developer day Customization:
+
+A Mcp tool written in quarkus has been added. It is in quarkus-openshift-mcp folder. 
+
+You have to insert the tavily api key in the configmap in helm/llamastack/templates/configmap.yaml
+You have to add in the configmap also the configuration for the new mcp server, like this:
+- toolgroup_id: mcp::quarkus-openshift-mcp
+  provider_id: model-context-protocol
+  mcp_endpoint:
+  uri: http://quarkus-openshift-mcp/mcp/sse
+
+As you are querying openshift you need to create a service account and give to him some special rights. 
+
+oc adm policy add-role-to-user view -z quarkus-openshift-mcp-sa -n llama-stack-mcp-demo
+
+oc set serviceaccount deployments/quarkus-openshift-mcp quarkus-openshift-mcp-sa -n llama-stack-mcp-demo
+
+oc adm policy add-cluster-role-to-user cluster-admin -z quarkus-openshift-mcp-sa (maybe this could be done with some more fine grained permission)
+
