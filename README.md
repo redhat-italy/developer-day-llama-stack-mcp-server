@@ -142,7 +142,7 @@ All components are deployed using Helm charts located in the `helm/` directory:
 ### Clone the repository
 
 ```bash
-[git clone https://github.com/rh-ai-kickstart/llama-stack-mcp-server.git](https://github.com/redhat-italy/developer-day-llama-stack-mcp-server.git) && \
+git clone https://github.com/redhat-italy/developer-day-llama-stack-mcp-server.git && \
     cd llama-stack-mcp-server/
 ```
 
