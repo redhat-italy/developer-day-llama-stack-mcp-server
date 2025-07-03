@@ -153,6 +153,10 @@ data:
       provider_id: model-context-protocol
       mcp_endpoint:
         uri: http://custom-mcp-server/sse
+    - toolgroup_id: mcp::quarkus-openshift-mcp
+      provider_id: model-context-protocol
+      mcp_endpoint:
+        uri: http://quarkus-openshift-mcp/mcp/sse
     server:
       port: 8001
-{{- end }}
+      {{- end }}
